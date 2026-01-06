@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -28,6 +29,9 @@
             <div class="input-group">
                 <input type="text" id="usernameInput" placeholder="Enter username..." autocomplete="off">
                 <button id="checkBtn">Check Availability <i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+            <div id="historyContainer" class="history-container">
+                <!-- History Chips injected by JS -->
             </div>
             <p id="statusMsg" class="status-msg"></p>
         </div>
@@ -62,7 +66,9 @@
                     <button class="filter-btn" data-filter="found">Found Only</button>
                     <button class="filter-btn" data-filter="notfound">Not Found</button>
                 </div>
-                <button id="copyBtn" class="action-btn"><i class="fa-regular fa-copy"></i> Copy Found Links</button>
+                <button id="copyBtn" class="action-btn"><i class="fa-regular fa-copy"></i> Copy Links</button>
+                <button id="openAllBtn" class="action-btn"><i class="fa-solid fa-up-right-from-square"></i> Open All</button>
+                <button id="downloadBtn" class="action-btn"><i class="fa-solid fa-download"></i> Save Image</button>
             </div>
         </div>
 

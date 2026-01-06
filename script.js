@@ -40,7 +40,7 @@ const networks = [
     { name: 'Medium', url: 'https://medium.com/@{}', icon: 'fa-brands fa-medium', category: 'blogs' },
     { name: 'Quora', url: 'https://www.quora.com/profile/{}', icon: 'fa-brands fa-quora', category: 'blogs' },
     { name: 'Github', url: 'https://github.com/{}', icon: 'fa-brands fa-github', category: 'professional' },
-    { name: 'SoundCloud', url: 'https://soundcloud.com/{}', icon: 'fa-brands fa-soundcloud', category: 'video' }, // Audio actually but similar
+    { name: 'SoundCloud', url: 'https://soundcloud.com/{}', icon: 'fa-brands fa-soundcloud', category: 'video' },
     { name: 'Spotify', url: 'https://open.spotify.com/user/{}', icon: 'fa-brands fa-spotify', category: 'video' },
     { name: 'KakaoStory', url: 'https://story.kakao.com/{}', icon: 'fa-solid fa-book-open', category: 'blogs' },
     { name: 'WordPress', url: 'https://{}.wordpress.com', icon: 'fa-brands fa-wordpress', category: 'blogs' },
@@ -49,7 +49,7 @@ const networks = [
 
     // Games
     { name: 'Steam', url: 'https://steamcommunity.com/id/{}', icon: 'fa-brands fa-steam', category: 'games' },
-    { name: 'Roblox', url: 'https://www.roblox.com/user.aspx?username={}', icon: 'fa-solid fa-gamepad', category: 'games' } // Using legacy search URL that might redirect or 200
+    { name: 'Roblox', url: 'https://www.roblox.com/user.aspx?username={}', icon: 'fa-solid fa-gamepad', category: 'games' }
 ];
 
 const usernameInput = document.getElementById('usernameInput');
@@ -57,20 +57,23 @@ const checkBtn = document.getElementById('checkBtn');
 const resultsGrid = document.getElementById('resultsGrid');
 const statusMsg = document.getElementById('statusMsg');
 
-// New Control Elements
 const progressFill = document.getElementById('progressFill');
 const progressText = document.getElementById('progressText');
 const foundText = document.getElementById('foundText');
 const copyBtn = document.getElementById('copyBtn');
+const openAllBtn = document.getElementById('openAllBtn');
+const downloadBtn = document.getElementById('downloadBtn');
 const tabBtns = document.querySelectorAll('.tab-btn');
 const filterBtns = document.querySelectorAll('.filter-btn');
+const historyContainer = document.getElementById('historyContainer');
 
 let activeCategory = 'all';
 let activeFilter = 'all'; // all, found, notfound
-let resultsData = {}; // Store results: { NetworkName: { status: 'found'/'notfound', url: '...' } }
+let resultsData = {}; 
 let totalChecks = 0;
 let completedChecks = 0;
 let foundCount = 0;
+let searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
 
 // Initialize
 function initGrid() {
@@ -80,7 +83,6 @@ function initGrid() {
         card.className = 'card';
         card.dataset.category = net.category;
         card.dataset.name = net.name;
-        // Default state
         card.dataset.result = 'pending';
         
         card.innerHTML = `
@@ -97,6 +99,7 @@ function initGrid() {
         resultsGrid.appendChild(card);
     });
     updateVisibility();
+    renderHistory();
 }
 
 initGrid();
@@ -125,7 +128,7 @@ function updateVisibility() {
     const cards = document.querySelectorAll('.card');
     cards.forEach(card => {
         const cat = card.dataset.category;
-        const res = card.dataset.result; // pending, found, notfound
+        const res = card.dataset.result; 
 
         let catMatch = (activeCategory === 'all' || cat === activeCategory);
         let filterMatch = true;
@@ -152,7 +155,6 @@ checkBtn.addEventListener('click', () => {
         statusMsg.style.color = '#ef4444';
         return;
     }
-
     startSearch(username);
 });
 
@@ -160,6 +162,8 @@ function startSearch(username) {
     statusMsg.textContent = `Searching for accounts with username "${username}"...`;
     statusMsg.style.color = '#94a3b8';
     
+    addToHistory(username);
+
     // Reset Stats
     resultsData = {};
     totalChecks = networks.length;
@@ -169,10 +173,10 @@ function startSearch(username) {
     
     // Reset Cards
     document.querySelectorAll('.card').forEach(c => c.dataset.result = 'pending');
-    initGrid(); // Re-init to clear old statuses visually if needed, but easier to just reset contents
+    // Clear status text visually
+    initGrid(); 
     
-    // Actually we re-initialized grid to reset "Waiting" state text
-    // Now trigger checks
+    // Trigger checks
     networks.forEach(net => {
         checkNetwork(net, username);
     });
@@ -182,11 +186,9 @@ async function checkNetwork(net, username) {
     const statusEl = document.getElementById(`status-${net.name.replace(/\s/g, '-')}`);
     const card = statusEl.closest('.card');
     
-    // Set loading state
     statusEl.className = 'status checking';
     statusEl.innerHTML = '<div class="spinner"></div> Searching...';
 
-    // Construct URL
     const targetUrl = net.url.replace('{}', username);
     const proxyUrl = `check.php?url=${encodeURIComponent(targetUrl)}`;
 
@@ -195,14 +197,12 @@ async function checkNetwork(net, username) {
         const data = await response.json();
 
         if (data.status === 200) {
-            // Found
             statusEl.className = 'status available'; 
             statusEl.innerHTML = `<i class="fa-solid fa-check"></i> Found <a href="${targetUrl}" target="_blank" style="color: inherit; margin-left: 5px;"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>`;
             card.dataset.result = 'found';
             foundCount++;
             resultsData[net.name] = targetUrl;
         } else {
-            // Not Found (404 or others)
             statusEl.className = 'status error'; 
             statusEl.innerHTML = '<i class="fa-solid fa-xmark"></i> Not Found';
             card.dataset.result = 'notfound';
@@ -210,11 +210,11 @@ async function checkNetwork(net, username) {
     } catch (error) {
         statusEl.className = 'status error';
         statusEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Error';
-        card.dataset.result = 'notfound'; // Treat error as not found for filtering
+        card.dataset.result = 'notfound';
     } finally {
         completedChecks++;
         updateProgress();
-        updateVisibility(); // Update in case filters are active live
+        updateVisibility();
     }
 }
 
@@ -245,3 +245,73 @@ copyBtn.addEventListener('click', () => {
         }, 2000);
     });
 });
+
+// Open All Logic
+openAllBtn.addEventListener('click', () => {
+    const links = Object.values(resultsData);
+    if (links.length === 0) {
+        alert('No profiles found to open.');
+        return;
+    }
+    const confirmed = confirm(`Are you sure you want to open ${links.length} tabs? This might be blocked by your browser.`);
+    if (confirmed) {
+        links.forEach(link => window.open(link, '_blank'));
+    }
+});
+
+// Download Image Logic
+downloadBtn.addEventListener('click', () => {
+    // We will screenshot the container, but hide the inputs/history for cleaner look
+    const container = document.querySelector('.container');
+    
+    // Temporarily hide generic elements to make the screenshot "Report Like"
+    document.querySelector('.search-section').style.display = 'none';
+    document.querySelector('.controls-section').style.marginBottom = '20px';
+
+    html2canvas(container, {
+        backgroundColor: '#0f172a',
+        scale: 2 // High res
+    }).then(canvas => {
+        // Restore visibility
+        document.querySelector('.search-section').style.display = 'flex';
+        document.querySelector('.controls-section').style.marginBottom = '';
+
+        // Download
+        const link = document.createElement('a');
+        link.download = `report-${usernameInput.value || 'results'}.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+    }).catch(err => {
+        alert('Failed to generate image.');
+        console.error(err);
+        // Restore on error
+        document.querySelector('.search-section').style.display = 'flex';
+    });
+});
+
+
+// History Functions
+function addToHistory(username) {
+    // Remove if exists to move to top
+    searchHistory = searchHistory.filter(u => u !== username);
+    searchHistory.unshift(username);
+    // Keep max 5
+    if (searchHistory.length > 5) searchHistory.pop();
+    
+    localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+    renderHistory();
+}
+
+function renderHistory() {
+    historyContainer.innerHTML = '';
+    searchHistory.forEach(user => {
+        const chip = document.createElement('div');
+        chip.className = 'history-chip';
+        chip.innerHTML = `<span>${user}</span> <i class="fa-solid fa-rotate-right"></i>`;
+        chip.onclick = () => {
+            usernameInput.value = user;
+            startSearch(user);
+        };
+        historyContainer.appendChild(chip);
+    });
+}
