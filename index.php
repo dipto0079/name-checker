@@ -32,6 +32,40 @@
             <p id="statusMsg" class="status-msg"></p>
         </div>
 
+        <div class="controls-section">
+            <!-- Progress & Stats -->
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-stats">
+                    <span id="progressText">0/0 Checked</span>
+                    <span id="foundText">0 Found</span>
+                </div>
+            </div>
+
+            <!-- Category Tabs -->
+            <div class="tabs-container">
+                <button class="tab-btn active" data-category="all">All</button>
+                <button class="tab-btn" data-category="social">Social</button>
+                <button class="tab-btn" data-category="video">Video</button>
+                <button class="tab-btn" data-category="messaging">Messaging</button>
+                <button class="tab-btn" data-category="professional">Professional</button>
+                <button class="tab-btn" data-category="games">Games</button>
+                <button class="tab-btn" data-category="blogs">Blogs</button>
+            </div>
+
+            <!-- Action Filters -->
+            <div class="actions-bar">
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="all">Show All</button>
+                    <button class="filter-btn" data-filter="found">Found Only</button>
+                    <button class="filter-btn" data-filter="notfound">Not Found</button>
+                </div>
+                <button id="copyBtn" class="action-btn"><i class="fa-regular fa-copy"></i> Copy Found Links</button>
+            </div>
+        </div>
+
         <div class="results-grid" id="resultsGrid">
             <!-- Cards will be injected here by JS -->
         </div>
