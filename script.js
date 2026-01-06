@@ -4,26 +4,36 @@ const networks = [
     { name: 'Instagram', url: 'https://www.instagram.com/{}/', icon: 'fa-brands fa-instagram' },
     { name: 'TikTok', url: 'https://www.tiktok.com/@{}', icon: 'fa-brands fa-tiktok' },
     { name: 'Twitter (X)', url: 'https://x.com/{}', icon: 'fa-brands fa-x-twitter' },
+    { name: 'LinkedIn', url: 'https://www.linkedin.com/in/{}/', icon: 'fa-brands fa-linkedin' },
     { name: 'Pinterest', url: 'https://www.pinterest.com/{}/', icon: 'fa-brands fa-pinterest' },
     { name: 'Reddit', url: 'https://www.reddit.com/user/{}/', icon: 'fa-brands fa-reddit' },
-    { name: 'Github', url: 'https://github.com/{}', icon: 'fa-brands fa-github' },
+    { name: 'Snapchat', url: 'https://www.snapchat.com/add/{}', icon: 'fa-brands fa-snapchat' },
+    { name: 'Threads', url: 'https://www.threads.net/@{}', icon: 'fa-brands fa-threads' },
+    { name: 'Tumblr', url: 'https://{}.tumblr.com/', icon: 'fa-brands fa-tumblr' },
     { name: 'Twitch', url: 'https://www.twitch.tv/{}', icon: 'fa-brands fa-twitch' },
+    { name: 'Discord', url: 'https://discord.com/users/{}', icon: 'fa-brands fa-discord' }, // ID based mainly, but included
+    { name: 'WhatsApp', url: 'https://wa.me/{}', icon: 'fa-brands fa-whatsapp' }, // Phone based
+    { name: 'Messenger', url: 'https://m.me/{}', icon: 'fa-brands fa-facebook-messenger' },
+    { name: 'Telegram', url: 'https://t.me/{}', icon: 'fa-brands fa-telegram' },
+    { name: 'Quora', url: 'https://www.quora.com/profile/{}', icon: 'fa-brands fa-quora' },
+    { name: 'Medium', url: 'https://medium.com/@{}', icon: 'fa-brands fa-medium' },
+    { name: 'WeChat', url: 'https://weixin.qq.com/r/{}', icon: 'fa-brands fa-weixin' }, // Hard to check
+    { name: 'LINE', url: 'https://line.me/ti/p/~{}', icon: 'fa-brands fa-line' },
+    { name: 'Viber', url: 'https://viber.click/{}', icon: 'fa-brands fa-viber' }, // Phone based
+    { name: 'VK', url: 'https://vk.com/{}', icon: 'fa-brands fa-vk' },
+    { name: 'Weibo', url: 'https://weibo.com/n/{}', icon: 'fa-brands fa-weibo' },
+    { name: 'QQ', url: 'https://user.qzone.qq.com/{}', icon: 'fa-brands fa-qq' },
+    { name: 'Clubhouse', url: 'https://www.clubhouse.com/@{}', icon: 'fa-regular fa-comments' }, // No brand icon yet in some sets? Using generic or check if exists.
+    { name: 'Douyin', url: 'https://www.douyin.com/user/{}', icon: 'fa-brands fa-tiktok' }, // Same icon as tiktok?
+    { name: 'KakaoTalk', url: 'https://open.kakao.com/me/{}', icon: 'fa-solid fa-comment' }, // Custom icon
+    { name: 'KakaoStory', url: 'https://story.kakao.com/{}', icon: 'fa-solid fa-book-open' },
+    { name: 'Mixi', url: 'https://mixi.jp/show_friend.pl?id={}', icon: 'fa-solid fa-user-group' },
+    { name: 'ShareChat', url: 'https://sharechat.com/profile/{}', icon: 'fa-solid fa-share-nodes' },
+    { name: 'Koo', url: 'https://www.kooapp.com/profile/{}', icon: 'fa-solid fa-kiwi-bird' }, // KOO icon?
+    { name: 'Github', url: 'https://github.com/{}', icon: 'fa-brands fa-github' },
     { name: 'SoundCloud', url: 'https://soundcloud.com/{}', icon: 'fa-brands fa-soundcloud' },
     { name: 'Spotify', url: 'https://open.spotify.com/user/{}', icon: 'fa-brands fa-spotify' },
-    { name: 'Medium', url: 'https://medium.com/@{}', icon: 'fa-brands fa-medium' },
-    { name: 'Vimeo', url: 'https://vimeo.com/{}', icon: 'fa-brands fa-vimeo' },
-    { name: 'Tumblr', url: 'https://{}.tumblr.com/', icon: 'fa-brands fa-tumblr' },
-    { name: 'Steam', url: 'https://steamcommunity.com/id/{}', icon: 'fa-brands fa-steam' },
-    { name: 'Patreon', url: 'https://www.patreon.com/{}', icon: 'fa-brands fa-patreon' },
-    { name: 'Bitbucket', url: 'https://bitbucket.org/{}/', icon: 'fa-brands fa-bitbucket' },
-    { name: 'Dribbble', url: 'https://dribbble.com/{}', icon: 'fa-brands fa-dribbble' },
-    { name: 'Behance', url: 'https://www.behance.net/{}', icon: 'fa-brands fa-behance' },
-    { name: 'Flickr', url: 'https://www.flickr.com/people/{}/', icon: 'fa-brands fa-flickr' },
-    { name: 'VK', url: 'https://vk.com/{}', icon: 'fa-brands fa-vk' },
-    { name: 'Telegram', url: 'https://t.me/{}', icon: 'fa-brands fa-telegram' },
-    { name: 'Slack', url: 'https://{}.slack.com', icon: 'fa-brands fa-slack' },
-    { name: 'Dev.to', url: 'https://dev.to/{}', icon: 'fa-brands fa-dev' },
-    { name: 'Gitlab', url: 'https://gitlab.com/{}', icon: 'fa-brands fa-gitlab' }
+    { name: 'Vimeo', url: 'https://vimeo.com/{}', icon: 'fa-brands fa-vimeo' }
 ];
 
 const usernameInput = document.getElementById('usernameInput');
@@ -94,8 +104,6 @@ async function checkNetwork(net, username) {
             statusEl.className = 'status available'; // Green to indicate "Yes, found!"
             statusEl.innerHTML = `<i class="fa-solid fa-check"></i> Account Found <a href="${targetUrl}" target="_blank" style="color: inherit; margin-left: 5px;"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>`;
         } else {
-            // Treat others as potential hits or errors, but for "searching", maybe assume found if not 404?
-            // Safer to be explicit. Let's keep specific 200 logic.
             statusEl.className = 'status taken'; 
             statusEl.innerHTML = '<i class="fa-solid fa-question"></i> Unknown';
         }
