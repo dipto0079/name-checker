@@ -23,7 +23,7 @@ A premium, aesthetically pleasing web application that allows users to instantly
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/social-media-checker.git
+   git clone git@github.com:dipto0079/name-checker.git
    ```
 
 2. **Serve the project**:
@@ -32,7 +32,7 @@ A premium, aesthetically pleasing web application that allows users to instantly
    
    **Using PHP Built-in Server**:
    ```bash
-   cd social-media-checker
+   cd name-checker
    php -S localhost:8000
    ```
 
